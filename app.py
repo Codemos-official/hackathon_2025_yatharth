@@ -133,42 +133,56 @@ def lock_seats():
 
     return jsonify({"status":"ok"})
 
-# 🔥 THIS IS THE UPDATED SMART ROUTE 🔥
+# ---------------- SEATS ROUTE (FIXED TIME & TITLE) ----------------
 @app.route('/seats/<int:show_id>')
 def seats(show_id):
     cur = mysql.connection.cursor()
 
-    # 1. PEHLE CHECK KARO: Kya is show ke liye seats hain?
+    # 1. AUTO-GENERATE CHECK (Smart Logic)
     cur.execute("SELECT count(*) FROM seats WHERE show_id=%s", (show_id,))
     count = cur.fetchone()[0]
 
-    # 2. AGAR SEATS NAHI HAIN, TOH ABHI BANA DO (Auto-Generate)
     if count == 0:
-        rows = ['A', 'B', 'C', 'D', 'E'] # A-B VIP, C-E Gold
+        rows = ['A', 'B', 'C', 'D', 'E']
         seats_per_row = 8
-        
         for r in rows:
             for n in range(1, seats_per_row + 1):
                 seat_num = f"{r}{n}"
                 seat_type = 'VIP' if r in ['A', 'B'] else 'Standard'
                 price = 500 if seat_type == 'VIP' else 250
-                
                 cur.execute("""
                     INSERT INTO seats (show_id, seat_number, status, seat_type, price)
                     VALUES (%s, %s, 'available', %s, %s)
                 """, (show_id, seat_num, seat_type, price))
-        
         mysql.connection.commit()
-        print(f"✅ Seats auto-generated for Show ID: {show_id}")
 
-    # 3. AB SEATS FETCH KARO
-    cur.execute(
-        "SELECT seat_number, status FROM seats WHERE show_id=%s",
-        (show_id,)
-    )
+    # 2. FETCH MOVIE DETAILS (Title & Time) -- YE NAYA HAI
+    cur.execute("""
+        SELECT movies.title, shows.show_time 
+        FROM shows 
+        JOIN movies ON shows.movie_id = movies.id 
+        WHERE shows.id = %s
+    """, (show_id,))
+    
+    show_data = cur.fetchone()
+    
+    movie_title = "Unknown"
+    show_time_str = ""
+
+    if show_data:
+        movie_title = show_data[0]
+        # Time ko format karna (e.g. 10:00 PM)
+        dt_obj = show_data[1]
+        if isinstance(dt_obj, str):
+            dt_obj = datetime.strptime(dt_obj, '%Y-%m-%d %H:%M:%S')
+        show_time_str = dt_obj.strftime("%I:%M %p")
+
+    # 3. FETCH SEATS
+    cur.execute("SELECT seat_number, status FROM seats WHERE show_id=%s", (show_id,))
     seats = cur.fetchall()
-    return render_template('seats.html', seats=seats, show_id=show_id)
-
+    
+    # Template mein title aur time pass kar rahe hain
+    return render_template('seats.html', seats=seats, show_id=show_id, movie_title=movie_title, show_time=show_time_str)
 # ---------------- OTP & CONFIRMATION ----------------
 @app.route('/otp', methods=['GET', 'POST'])
 def otp():

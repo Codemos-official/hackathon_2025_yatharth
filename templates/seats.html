@@ -218,15 +218,13 @@
 <header>
   <div>
     <h2>Select Seats</h2>
-    <p>IMAX 2D • 10:00 PM</p>
+    <p>{{ movie_title }} • {{ show_time }}</p>
   </div>
   <a href="/movies" class="close-btn">&times;</a>
 </header>
 
 <div class="movie-meta">
-  <div class="time-pill">04:00 PM</div>
-  <div class="time-pill active">07:30 PM</div>
-  <div class="time-pill">10:45 PM</div>
+  <div class="time-pill active">{{ show_time }}</div>
 </div>
 
 <div class="container">
