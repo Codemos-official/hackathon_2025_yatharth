@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Booking | CineBook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --gold: #FFD700;
+      --bg-dark: #000000;
+      --glass-bg: rgba(20, 20, 20, 0.95); /* Thoda dark card taaki bright seats par bhi text dikhe */
+      --glass-border: rgba(255, 215, 0, 0.2);
+      --text-white: #ffffff;
+      --text-gray: #b0b0b0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background-color: var(--bg-dark);
+      
+      /* --- MAGIC FIX FOR VISIBILITY --- */
+      /* Upar Dark (0.9) -> Neeche Transparent (0.2) taaki Seats dikhein */
+      background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%), 
+                  url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop');
+      
+      background-size: cover;
+      background-position: center bottom; /* Seats neeche hoti hain, isliye bottom fix kiya */
+      background-repeat: no-repeat;
+      
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* --- TICKET CARD --- */
+    .ticket-card {
+      width: 100%;
+      max-width: 380px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px); /* Blur kam kiya taaki background feel ho */
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      animation: floatUp 0.6s ease-out;
+    }
+
+    /* Gold Top Bar */
+    .ticket-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* --- MOVIE SECTION --- */
+    .movie-section {
+      padding: 25px;
+      border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    /* Cutouts */
+    .movie-section::after, .movie-section::before {
+      content: ''; position: absolute; bottom: -10px; width: 20px; height: 20px;
+      background: #000; /* Dark circle to match shadow areas */
+      border-radius: 50%; z-index: 2;
+    }
+    .movie-section::after { right: -10px; }
+    .movie-section::before { left: -10px; }
+
+    .movie-title {
+      font-size: 1.3rem; color: var(--gold); font-weight: 700;
+      text-transform: uppercase; margin-bottom: 5px;
+    }
+
+    .movie-time { 
+      color: #fff; font-size: 0.85rem; margin-bottom: 15px; 
+      display: flex; align-items: center; gap: 8px; opacity: 0.8;
+    }
+
+    .summary-grid {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      background: rgba(255,255,255,0.05);
+      padding: 12px; border-radius: 8px;
+    }
+    
+    .label { font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase; margin-bottom: 4px; }
+    .value { font-size: 0.9rem; color: #fff; font-weight: 500; }
+    .total-price { font-size: 1.1rem; color: var(--gold); font-weight: 700; }
+
+    /* --- OTP FORM --- */
+    .otp-section { padding: 30px 25px; text-align: center; }
+
+    .otp-header { color: #fff; font-size: 1rem; font-weight: 600; margin-bottom: 5px; }
+    .otp-sub { color: var(--text-gray); font-size: 0.8rem; margin-bottom: 20px; }
+
+    .otp-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #555;
+      color: #fff;
+      font-size: 2rem;
+      text-align: center;
+      letter-spacing: 12px;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      outline: none;
+    }
+    .otp-input:focus { border-bottom-color: var(--gold); }
+    .otp-input::placeholder { color: #444; font-weight: 300; letter-spacing: 4px; font-size: 1.2rem; }
+
+    /* --- TIMER --- */
+    .timer-badge {
+      display: inline-block;
+      background: rgba(255, 215, 0, 0.1);
+      color: var(--gold);
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    /* --- BUTTON --- */
+    .btn-confirm {
+      width: 100%;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      transition: 0.3s;
+    }
+    .btn-confirm:hover { background: #fff; transform: translateY(-2px); }
+    .btn-confirm:disabled { background: #333; color: #666; cursor: not-allowed; box-shadow: none; }
+
+    .error-msg {
+      background: rgba(239, 68, 68, 0.15); color: #ef4444; 
+      padding: 8px; border-radius: 6px; margin-bottom: 15px; font-size: 0.8rem;
+    }
+
+    @keyframes floatUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <div class="ticket-card">
+    
+    <div class="movie-section">
+      <div class="movie-title">{{ movie_title }}</div>
+      <div class="movie-time"><i class="far fa-calendar-alt"></i> {{ show_time }}</div>
+      
+      <div class="summary-grid">
+        <div>
+          <div class="label">Seats ({{ seat_count }})</div>
+          <div class="value">{{ seats_str }}</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="label">Total Amount</div>
+          <div class="total-price">₹{{ total_price }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="otp-section">
+      <div class="otp-header">Authentication</div>
+      <div class="otp-sub">Enter the PIN sent to your terminal</div>
+
+      {% if error %}
+        <div class="error-msg"><i class="fas fa-exclamation-triangle"></i> {{ error }}</div>
+      {% endif %}
+
+      <div class="timer-badge">
+        <i class="far fa-clock"></i> <span id="timer">05:00</span>
+      </div>
+
+      <form method="POST" action="/otp">
+        <input 
+          type="text" 
+          name="otp" 
+          class="otp-input"
+          maxlength="6" 
+          placeholder="• • • • • •" 
+          required 
+          autocomplete="off" 
+          autofocus
+        >
+        
+        <button type="submit" class="btn-confirm">Confirm Booking</button>
+      </form>
+
+      <div id="timeout-msg" style="display:none; color:#ef4444; margin-top:20px; font-weight:600; font-size: 0.85rem;">
+        Session Expired. Seats released.
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let timeLeft = 300; 
+    const timerEl = document.getElementById("timer");
+    const timeoutMsg = document.getElementById("timeout-msg");
+    const inputField = document.querySelector('.otp-input');
+    const btn = document.querySelector('.btn-confirm');
+    const timerBadge = document.querySelector('.timer-badge');
+
+    const timer = setInterval(() => {
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        
+        timerEl.innerText = "00:00";
+        timerBadge.style.background = "rgba(239, 68, 68, 0.1)";
+        timerBadge.style.color = "#ef4444";
+        timerBadge.style.borderColor = "#ef4444";
+        timeoutMsg.style.display = "block";
+        
+        inputField.disabled = true;
+        inputField.style.borderBottomColor = "#333";
+        inputField.style.color = "#666";
+        btn.disabled = true;
+        btn.innerText = "EXPIRED";
+
+        fetch('/release-seats', { method: 'POST' });
+
+        setTimeout(() => { window.location.href = "/movies"; }, 3000);
+        return;
+      }
+
+      let m = Math.floor(timeLeft / 60);
+      let s = timeLeft % 60;
+      timerEl.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      
+      if (timeLeft < 30) {
+        timerBadge.style.color = "#ff9f43"; 
+        timerBadge.style.borderColor = "#ff9f43";
+      }
+      
+      timeLeft--;
+    }, 1000);
+  </script>
+
+</body>
+</html>

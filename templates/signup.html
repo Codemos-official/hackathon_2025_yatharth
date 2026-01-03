@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign Up | CineBook</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+:root {
+  --primary: #FFD700;
+  --primary-glow: #ffff66;
+  --bg-dark: #000;
+  --card-bg: rgba(12, 12, 12, .88);
+  --text: #fff;
+  --muted: #bdbdbd;
+  --error: #ff5555;
+  --success: #44ff88;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins;
+}
+
+/* ===== BODY BACKGROUND ===== */
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    linear-gradient(120deg,
+      rgba(0,0,0,.92),
+      rgba(30,30,30,.85),
+      rgba(0,0,0,.95)
+    ),
+    url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba");
+  background-size: 400% 400%, cover;
+  background-position: center;
+  animation: bgMove 18s ease infinite;
+  overflow: hidden;
+}
+
+/* Animated gradient */
+@keyframes bgMove {
+  0% {background-position: 0% 50%, center}
+  50% {background-position: 100% 50%, center}
+  100% {background-position: 0% 50%, center}
+}
+
+/* Mouse glow */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(255, 215, 0, .08),
+    transparent 40%
+  );
+}
+
+/* Canvas for golden particles */
+#bgCanvas {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+/* ===== SIGNUP CARD ===== */
+.signup-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--card-bg);
+  padding: 56px 40px;
+  border-radius: 28px;
+  text-align: center;
+  position: relative;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, .9),
+    0 0 70px rgba(255, 215, 0, .25);
+  border: 1px solid rgba(255, 215, 0, .2);
+}
+
+/* Glow bars */
+.signup-card::before,
+.signup-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary),
+    var(--primary-glow),
+    var(--primary),
+    transparent
+  );
+}
+.signup-card::before { top: -2px }
+.signup-card::after { bottom: -2px }
+
+/* Logo */
+.brand-logo {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, var(--primary-glow), var(--primary));
+  box-shadow: 0 0 50px rgba(255, 215, 0, .7);
+  animation: pulse 3s infinite alternate;
+}
+.brand-logo i {
+  font-size: 2.6rem;
+  color: #000;
+}
+@keyframes pulse {
+  from { box-shadow: 0 0 30px rgba(255, 215, 0, .5) }
+  to { box-shadow: 0 0 65px rgba(255, 215, 0, .9) }
+}
+
+h2 {
+  color: var(--text);
+  font-size: 2rem;
+  font-weight: 700;
+}
+.subtitle {
+  color: var(--muted);
+  margin: 8px 0 36px;
+}
+
+/* Inputs */
+.field {
+  position: relative;
+  margin-bottom: 28px;
+}
+.field input {
+  width: 100%;
+  padding: 18px 48px 18px 16px;
+  border-radius: 16px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+  transition: .35s;
+}
+.field label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+  font-size: .9rem;
+  pointer-events: none;
+  transition: .3s;
+}
+.field i {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  cursor: pointer;
+}
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  top: -8px;
+  font-size: .75rem;
+  color: var(--primary);
+}
+.field input:focus {
+  box-shadow: 0 0 22px rgba(255, 215, 0, .45);
+}
+
+.dark {
+  background: #1c1c1c;
+  color: #fff;
+  border: 1px solid rgba(255, 215, 0, .1);
+}
+.light {
+  background: #fff;
+  color: #000;
+}
+
+/* Password strength */
+.strength {
+  height: 5px;
+  background: #333;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.strength span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  transition: .3s;
+}
+.strength-text {
+  font-size: .8rem;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+/* Button */
+.btn {
+  width: 80%;
+  max-width: 280px;
+  padding: 18px;
+  margin: 26px auto 0;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 10px 35px rgba(255, 215, 0, .6);
+  transition: .35s;
+  position: relative;
+}
+.btn:hover {
+  transform: translateY(-4px);
+  background: var(--primary-glow);
+}
+.btn.loading {
+  pointer-events: none;
+  opacity: .7;
+}
+.btn.loading::after {
+  content: "";
+  width: 22px;
+  height: 22px;
+  border: 3px solid #000;
+  border-top-color: transparent;
+  border-radius: 50%;
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg) }
+}
+
+/* Message */
+.message {
+  padding: 14px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  font-size: .95rem;
+  display: none;
+}
+.message.success {
+  background: rgba(68, 255, 136, .2);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.footer {
+  margin-top: 36px;
+  color: var(--muted);
+  font-size: .95rem;
+}
+.footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="signup-card">
+  <div class="brand-logo">
+    <i class="fas fa-film"></i>
+  </div>
+
+  <h2>Create Account</h2>
+  <p class="subtitle">Join the ultimate cinematic experience</p>
+
+  <div class="message" id="msg"></div>
+
+  <form id="form" method="POST" action="/signup">
+    <div class="field">
+      <input type="text" name="name" placeholder=" " class="dark" required />
+      <label>Full Name</label>
+    </div>
+
+    <div class="field">
+      <input type="email" name="email" placeholder=" " class="light" required />
+      <label>Email Address</label>
+    </div>
+
+    <div class="field">
+      <input type="password" id="password" name="password" placeholder=" " class="light" required />
+      <label>Create Password</label>
+      <i class="fas fa-eye" id="toggle"></i>
+
+      <div class="strength"><span id="bar"></span></div>
+      <div class="strength-text" id="strengthText">Password strength</div>
+    </div>
+
+    <button type="submit" class="btn" id="btn">Sign Up</button>
+  </form>
+
+  <div class="footer">
+    Already have an account? <a href="/login">Login</a>
+  </div>
+</div>
+
+<script>
+/* Mouse glow */
+document.addEventListener("mousemove", e => {
+  document.body.style.setProperty("--x", e.clientX + "px");
+  document.body.style.setProperty("--y", e.clientY + "px");
+});
+
+/* Password strength */
+const password = document.getElementById("password");
+const bar = document.getElementById("bar");
+const text = document.getElementById("strengthText");
+
+password.addEventListener("input", () => {
+  let v = password.value, s = 0;
+  if (v.length >= 8) s++;
+  if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
+  if (/\d/.test(v)) s++;
+  if (/[^a-zA-Z0-9]/.test(v)) s++;
+
+  bar.style.width = s * 25 + "%";
+  bar.style.background = ["#ff5555", "#ffaa00", "#aaff00", "#44ff88"][s - 1] || "#333";
+  text.textContent = ["Weak", "Fair", "Good", "Strong"][s - 1] || "Password strength";
+});
+
+/* Show password toggle */
+document.getElementById("toggle").onclick = () => {
+  password.type = password.type === "password" ? "text" : "password";
+};
+
+/* Remove demo submit handler, so form submits normally */
+</script>
+
+<script>
+/* Particles */
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+let w, h;
+const particles = [];
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+for (let i = 0; i < 70; i++) {
+  particles.push({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    r: Math.random() * 2 + 1,
+    vx: (Math.random() - .5) * 0.3,
+    vy: (Math.random() - .5) * 0.3
+  });
+}
+
+function animate() {
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "rgba(255,215,0,.6)";
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.x < 0 || p.x > w) p.vx *= -1;
+    if (p.y < 0 || p.y > h) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

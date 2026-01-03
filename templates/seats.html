@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Seats | CineBook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      --primary: #FFD700;       /* Gold */
+      --bg-body: #0f172a;       /* Dark Navy Background */
+      --seat-border: #94a3b8;   /* Light Grey Border */
+      --booked-bg: #475569;     /* Slate Grey */
+      --booked-text: #cbd5f5;   
+      --selected-bg: #FFD700;
+      --selected-text: #000000;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background-color: var(--bg-body);
+      color: #fff;
+      padding-bottom: 100px;
+    }
+
+    /* --- HEADER --- */
+    header {
+      padding: 15px 20px;
+      background: #020617;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h2 { font-size: 1.1rem; margin: 0; }
+    .close-btn { color: #fff; font-size: 1.5rem; cursor: pointer; text-decoration: none; }
+
+    /* --- MOVIE META --- */
+    .movie-meta {
+      padding: 15px 20px;
+      background: #1e293b;
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+    }
+    .time-pill {
+      border: 1px solid #475569;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: #cbd5f5;
+      white-space: nowrap;
+    }
+    .time-pill.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(255, 215, 0, 0.1);
+    }
+
+    /* --- CONTAINER --- */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin: 25px 0 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-top: 1px dashed #333;
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .seats-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+      row-gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    /* Aisle Gap */
+    .seats-grid .seat:nth-child(4n) { margin-right: 20px; }
+    .seats-grid .seat:nth-child(8n) { margin-right: 0; }
+
+    /* --- SEAT DESIGN --- */
+    .seat {
+      height: 35px;
+      border: 1px solid var(--seat-border);
+      border-radius: 6px 6px 4px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+      position: relative;
+    }
+
+    .seat::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      width: 80%;
+      height: 4px;
+      background: inherit;
+      border-radius: 4px;
+      opacity: 0.7;
+    }
+
+    .seat:not(.booked):hover {
+      transform: scale(1.1);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+    }
+
+    /* STATES */
+    .seat.available { background: transparent; }
+    
+    .seat.selected {
+      background-color: var(--selected-bg);
+      border-color: var(--selected-bg);
+      color: var(--selected-text);
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.5);
+    }
+
+    .seat.booked, .seat.locked {
+      background-color: var(--booked-bg);
+      border-color: var(--booked-bg);
+      color: var(--booked-text);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* --- LEGEND & SCREEN --- */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      background: rgba(0,0,0,0.2);
+      padding: 10px;
+      border-radius: 30px;
+      display: inline-flex;
+    }
+    .dot { width: 14px; height: 14px; display: inline-block; border-radius: 3px; vertical-align: middle; margin-right: 5px; }
+    .d-avail { border: 1px solid #fff; }
+    .d-sel { background: var(--selected-bg); }
+    .d-book { background: var(--booked-bg); }
+
+    .screen-container {
+      margin-top: 50px;
+      perspective: 500px;
+    }
+    .screen {
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+      transform: rotateX(-30deg) scale(0.9);
+      box-shadow: 0 -15px 30px rgba(255,255,255,0.1);
+      border-top: 3px solid rgba(255,255,255,0.4);
+      border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+      margin-bottom: 10px;
+    }
+
+    /* --- BOTTOM BAR --- */
+    .booking-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #1e293b;
+      padding: 15px 20px;
+      border-top: 1px solid var(--primary);
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+    }
+    .bar-content { width: 100%; max-width: 600px; }
+    .pay-btn {
+      background: var(--primary);
+      color: #000;
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      transition: 0.2s;
+    }
+    .pay-btn:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h2>Select Seats</h2>
+    <p>IMAX 2D • 10:00 PM</p>
+  </div>
+  <a href="/movies" class="close-btn">&times;</a>
+</header>
+
+<div class="movie-meta">
+  <div class="time-pill">04:00 PM</div>
+  <div class="time-pill active">07:30 PM</div>
+  <div class="time-pill">10:45 PM</div>
+</div>
+
+<div class="container">
+
+  <div class="section-label">
+    <span>VIP Recliners</span>
+    <span>₹500</span>
+  </div>
+  
+  <div class="seats-grid">
+    {% for s in seats if 'A' in s[0] or 'B' in s[0] %}
+      <div 
+        class="seat {{ s[1] }}" 
+        data-id="{{ s[0] }}" 
+        data-price="500" 
+        onclick="toggleSeat(this)">
+          {{ s[0] }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="section-label">
+    <span>Gold Class</span>
+    <span>₹250</span>
+  </div>
+
+  <div class="seats-grid">
+    {% for s in seats if 'A' not in s[0] and 'B' not in s[0] %}
+      <div 
+        class="seat {{ s[1] }}" 
+        data-id="{{ s[0] }}" 
+        data-price="250" 
+        onclick="toggleSeat(this)">
+          {{ s[0] }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="legend">
+    <span><span class="dot d-avail"></span> Available</span>
+    <span><span class="dot d-sel"></span> Selected</span>
+    <span><span class="dot d-book"></span> Sold</span>
+  </div>
+
+  <div class="screen-container">
+    <div class="screen"></div>
+    <p style="color:#64748b; font-size:0.8rem">All eyes this way</p>
+  </div>
+
+</div>
+
+<div class="booking-bar">
+  <div class="bar-content">
+    <button type="button" class="pay-btn" id="payBtn" disabled onclick="handlePayment()">
+      <span id="seatCountText">Select Seats</span>
+      <span id="totalPrice">₹0</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  let selectedSeats = [];
+  let totalPrice = 0;
+  // This value comes from your Flask template
+  const showId = {{ show_id }};
+
+  function toggleSeat(element) {
+    // Check if booked or locked
+    if (element.classList.contains('booked') || element.classList.contains('locked')) return;
+
+    const seatId = element.getAttribute('data-id');
+    const price = parseInt(element.getAttribute('data-price'));
+
+    if (element.classList.contains('selected')) {
+      // Unselect
+      element.classList.remove('selected');
+      selectedSeats = selectedSeats.filter(id => id !== seatId);
+      totalPrice -= price;
+    } else {
+      // Select
+      element.classList.add('selected');
+      selectedSeats.push(seatId);
+      totalPrice += price;
+    }
+    updateUI();
+  }
+
+  function updateUI() {
+    const btn = document.getElementById('payBtn');
+    const countSpan = document.getElementById('seatCountText');
+    const priceSpan = document.getElementById('totalPrice');
+
+    if (selectedSeats.length > 0) {
+      btn.disabled = false;
+      countSpan.innerText = `Pay for ${selectedSeats.length} seat(s)`;
+      priceSpan.innerText = `₹${totalPrice}`;
+      btn.style.backgroundColor = '#FFD700'; // Active Gold
+      btn.style.color = '#000';
+    } else {
+      btn.disabled = true;
+      countSpan.innerText = "Select Seats";
+      priceSpan.innerText = "₹0";
+      btn.style.backgroundColor = '#475569'; // Disabled Grey
+    }
+  }
+
+  // --- THE BRIDGE TO YOUR APP.PY ---
+  async function handlePayment() {
+    if (selectedSeats.length === 0) return;
+
+    // Change button text to indicate processing
+    const btn = document.getElementById('payBtn');
+    const originalText = document.getElementById('seatCountText').innerText;
+    document.getElementById('seatCountText').innerText = "Processing...";
+    btn.disabled = true;
+
+    try {
+      // 1. Call your /lock_seats route via AJAX
+      const response = await fetch('/lock_seats', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          show_id: showId,
+          seats: selectedSeats
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.status === 'ok') {
+        // 2. If locking successful, redirect to OTP page
+        window.location.href = '/otp';
+      } else {
+        alert("Sorry, some of these seats were just taken. Please select others.");
+        location.reload(); // Refresh to see updated seats
+      }
+
+    } catch (error) {
+      console.error('Error:', error);
+      alert("Something went wrong. Please try again.");
+      document.getElementById('seatCountText').innerText = originalText;
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>

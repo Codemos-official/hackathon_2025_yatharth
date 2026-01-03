@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineBook | Premium Movie Experience</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    /* --- HIGH CONTRAST PALETTE --- */
+    :root {
+      --primary: #FFD700; /* Bright Gold */
+      --primary-hover: #E5C100;
+      --bg-body: #000000; /* Pure Black */
+      --bg-card: #111111; /* Very Dark Grey */
+      --text-main: #ffffff; /* Pure White for reading */
+      --text-muted: #cccccc; /* Light Grey for descriptions */
+      --border-gold: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    a { text-decoration: none; color: inherit; transition: 0.3s; }
+
+    /* --- HEADER --- */
+    header {
+      background: rgba(0, 0, 0, 0.9);
+      border-bottom: var(--border-gold);
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    header h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      margin-left: 25px;
+      font-size: 1rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--primary);
+      padding: 8px 25px;
+      border-radius: 4px;
+      color: var(--primary) !important;
+      font-weight: bold;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: #000 !important;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2525&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-shadow: 2px 2px 4px #000;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: var(--text-main);
+      margin-bottom: 40px;
+      max-width: 700px;
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .cta-button {
+      background-color: var(--primary);
+      color: #000;
+      padding: 15px 50px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .cta-button:hover {
+      background-color: #fff;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    /* --- CARDS SECTION --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .section-title h2 { font-size: 2.5rem; color: var(--text-main); }
+    .section-title span { color: var(--primary); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      padding: 40px 30px;
+      border: 1px solid #333;
+      border-bottom: 3px solid var(--primary);
+      border-radius: 8px;
+      transition: 0.3s;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      background: #1f1f1f;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 25px;
+    }
+
+    .feature-card h3 {
+      color: var(--text-main);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* --- DASHBOARD PREVIEW --- */
+    .dashboard-preview {
+      background: linear-gradient(145deg, #111 0%, #050505 100%);
+      border: 1px solid #333;
+      border-radius: 15px;
+      padding: 50px;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      header { flex-direction: column; gap: 15px; }
+      .nav-links { display: flex; flex-direction: column; gap: 10px; text-align: center; }
+      .nav-links a { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>🎬 CineBook</h2>
+  <nav class="nav-links">
+    {% if session.get('user_id') %}
+      <a href="/movies">BROWSE MOVIES</a> 
+      <a href="/my-bookings">MY BOOKINGS</a>
+      <a href="/logout" class="btn-outline">LOGOUT</a>
+    {% else %}
+      <a href="#">MOVIES</a>
+      <a href="#">THEATERS</a>
+      <a href="/login">LOGIN</a>
+      <a href="/signup" class="btn-outline">SIGN UP</a>
+    {% endif %}
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>CINEMA AWAITS</h1>
+    <p>
+      Book tickets for the latest blockbusters instantly. <br>
+      Experience the magic of movies with premium comfort.
+    </p>
+    {% if session.get('user_id') %}
+      <a href="/movies" class="cta-button">BOOK NOW</a>
+    {% else %}
+      <a href="/signup" class="cta-button">GET STARTED</a>
+    {% endif %}
+  </div>
+</section>
+
+<div class="container">
+  <div class="section-title">
+    <h2>Why Choose <span>CineBook</span>?</h2>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+      <h3>Fast Booking</h3>
+      <p>Secure your seats in seconds. Our optimized system ensures you never miss the start of the show.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fas fa-star"></i></div>
+      <h3>Premium Experience</h3>
+      <p>Enjoy the best screens and sound systems. We partner with top-rated theaters for your comfort.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+      <h3>E-Tickets</h3>
+      <p>Go paperless. Show your QR code at the entrance and walk right in. No printing needed.</p>
+    </div>
+  </div>
+
+  <div class="dashboard-preview">
+    <h3 style="color: var(--primary); font-size: 2rem; margin-bottom: 20px;">Your Entertainment Hub</h3>
+    
+    {% if session.get('user_id') %}
+      <p style="color: var(--text-main); font-size: 1.2rem;">Welcome back! Ready for your next movie?</p>
+      <div style="margin-top: 30px;">
+        <a href="/my-bookings" class="btn-outline">VIEW MY BOOKINGS</a>
+      </div>
+    {% else %}
+      <p style="color: var(--text-muted);">Join thousands of movie lovers today.</p>
+      <div style="margin-top: 30px;">
+        <a href="/login" style="color: var(--text-main); text-decoration: underline;">Already a member? Login here</a>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+</body>
+</html>

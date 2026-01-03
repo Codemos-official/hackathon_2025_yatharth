@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Movies | CineBook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    /* --- THEME VARIABLES --- */
+    :root {
+      --primary: #FFD700;       
+      --bg-body: #000000;      
+      --bg-card: #111111;       
+      --text-main: #ffffff;
+      --text-muted: #aaaaaa;
+      --border-gold: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      padding-bottom: 50px;
+    }
+
+    a { text-decoration: none; transition: 0.3s; }
+
+    /* --- HEADER --- */
+    header {
+      background: rgba(0, 0, 0, 0.95);
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: var(--border-gold);
+    }
+
+    header h2 { font-size: 1.5rem; color: var(--primary); text-transform: uppercase; }
+    
+    .nav-btn {
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+    }
+    .nav-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* --- DATE SELECTOR (NEW) --- */
+    .date-nav-container {
+      background: #0a0a0a;
+      padding: 20px 0;
+      border-bottom: 1px solid #222;
+      margin-bottom: 30px;
+    }
+    
+    .date-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 0 20px;
+    }
+
+    .date-tab {
+      background: #1a1a1a;
+      color: #888;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .date-tab:hover { border-color: var(--primary); color: #fff; }
+
+    .date-tab.active {
+      background: var(--primary);
+      color: #000;
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+
+    /* --- MOVIE GRID --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    /* --- CARD DESIGN --- */
+    .movie-card {
+      background: var(--bg-card);
+      border: 1px solid #222;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: 0.3s;
+      animation: fadeIn 0.5s ease forwards;
+      opacity: 0;
+    }
+    .movie-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+    }
+
+    .poster-wrapper {
+      height: 360px;
+      position: relative;
+      overflow: hidden;
+    }
+    .poster-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+    .movie-card:hover .poster-wrapper img { transform: scale(1.05); }
+
+    .card-details { padding: 15px; }
+    
+    .movie-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .movie-genre { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #000;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: 1px solid #222;
+    }
+    .time-badge { color: #fff; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+    .time-badge i { color: var(--primary); }
+    .price { color: var(--primary); font-weight: 700; }
+
+    .btn-book {
+      width: 100%;
+      background: var(--primary);
+      color: #000;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+    .btn-book:hover { background: #fff; }
+
+    /* Empty State */
+    .no-shows {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      color: #555;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2><i class="fas fa-film"></i> CineBook</h2>
+  <a href="/" class="nav-btn"><i class="fas fa-home"></i> Home</a>
+</header>
+
+<div class="date-nav-container">
+  <div class="date-tabs">
+    {% for tab in date_tabs %}
+      <a href="/movies?date={{ tab.value }}" class="date-tab {{ 'active' if tab.active else '' }}">
+        {{ tab.display }}
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="container">
+  
+  {% if movies %}
+    <div class="movies-grid">
+      {% for m in movies %}
+        <div class="movie-card" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+          
+          <div class="poster-wrapper">
+            <img src="/static/images/{{ m.poster }}" onerror="this.src='https://via.placeholder.com/300x450/111/ffd700?text=No+Image'">
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top, rgba(0,0,0,0.9), transparent); pointer-events:none;"></div>
+          </div>
+
+          <div class="card-details">
+            <h3 class="movie-title">{{ m.title }}</h3>
+            <p class="movie-genre">{{ m.genre }}</p>
+            
+            <div class="info-row">
+              <div class="time-badge"><i class="far fa-clock"></i> {{ m.time }}</div>
+              <div class="price">₹{{ m.price }}</div>
+            </div>
+
+            <a href="/seats/{{ m.show_id }}">
+              <button class="btn-book">Book Ticket</button>
+            </a>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="no-shows">
+      <i class="fas fa-video-slash" style="font-size: 3rem; margin-bottom: 15px;"></i>
+      <h3>No shows available for this date</h3>
+      <p>Please select another date from the tabs above.</p>
+    </div>
+  {% endif %}
+
+</div>
+
+</body>
+</html>

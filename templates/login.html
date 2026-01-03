@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | CineBook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #FFD700;
+      --bg-dark: #000000;
+      --card-bg: rgba(17, 17, 17, 0.95);
+      --text-main: #ffffff;
+      --input-bg: #222222;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      /* Changed rgba alpha from 0.8 to 0.4 for better visibility */
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      height: 100vh; /* Full Height */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* --- LOGIN CARD --- */
+    .login-card {
+      background: var(--card-bg);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      text-align: center;
+      animation: zoomIn 0.5s ease;
+    }
+
+    .brand-logo {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: var(--text-main);
+      margin-bottom: 30px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* --- INPUT GROUPS --- */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      transition: 0.3s;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 15px 12px 45px; /* Left padding for icon */
+      background: var(--input-bg);
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    /* Focus Effects */
+    .input-group input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
+
+    .input-group input:focus + i, 
+    .input-group input:not(:placeholder-shown) + i {
+      color: var(--primary); /* Icon becomes gold when active */
+    }
+
+    /* --- BUTTON --- */
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-login:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    /* --- FOOTER LINKS --- */
+    .form-footer {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    .form-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="brand-logo">
+    <i class="fas fa-film"></i>
+  </div>
+  
+  <h2>Welcome Back</h2>
+
+  <form method="post">
+    <div class="input-group">
+      <input type="email" name="email" placeholder="Email Address" required>
+      <i class="fas fa-envelope"></i>
+    </div>
+
+    <div class="input-group">
+      <input type="password" name="password" placeholder="Password" required>
+      <i class="fas fa-lock"></i>
+    </div>
+
+    <button type="submit" class="btn-login">LOGIN</button>
+  </form>
+
+  <div class="form-footer">
+    <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+    <p style="margin-top: 5px;"><a href="/">Back to Home</a></p>
+  </div>
+</div>
+
+</body>
+</html>

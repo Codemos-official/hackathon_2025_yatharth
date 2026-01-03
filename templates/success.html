@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed | CineBook</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --gold:#FFD700;
+  --success:#22c55e;
+  --text:#fff;
+  --muted:#a1a1aa;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins;
+}
+
+/* ===== CINEMATIC BACKGROUND ===== */
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  /* Updated to use the Red Seats Image you liked for consistency */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9)), 
+              url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop');
+  background-size:cover;
+  background-position:center;
+  overflow:hidden;
+  color:var(--text);
+}
+
+/* Mouse glow */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(
+    circle at var(--x,50%) var(--y,50%),
+    rgba(255,215,0,.08),
+    transparent 40%
+  );
+}
+
+/* Confetti canvas */
+#confetti-canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+}
+
+/* ===== SUCCESS CARD ===== */
+.container{
+  position:relative;
+  z-index:5;
+  animation:floatUp .8s ease-out;
+}
+
+.success-card{
+  background:rgba(18,18,18,.95); /* Slightly darker for readability */
+  border:1px solid rgba(255,215,0,0.2);
+  padding:40px;
+  border-radius:22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.9),
+             0 0 40px rgba(255,215,0,.1);
+  max-width:400px;
+  width:100%;
+  text-align:center;
+  backdrop-filter:blur(12px);
+}
+
+/* Gold top line */
+.success-card::before{
+  content:"";
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:4px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+/* Checkmark */
+.checkmark-wrapper{
+  width:80px;height:80px;
+  margin:0 auto 20px;
+  border-radius:50%;
+  background:rgba(34,197,94,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 25px rgba(34,197,94,.3);
+}
+.checkmark{
+  width:42px;height:42px;
+  stroke:var(--success);
+  stroke-width:4;
+  fill:none;
+  animation:drawCheck .6s ease forwards;
+}
+
+/* Text */
+h1{font-size:1.8rem;margin-bottom:10px; color:#fff;}
+p{color:var(--muted);font-size:.9rem;margin-bottom:28px}
+
+/* Ticket */
+.ticket-stub{
+  background:#1a1a1a;
+  padding:20px;
+  border-radius:14px;
+  border:1px dashed #444;
+  margin-bottom:30px;
+  text-align:left;
+  position:relative;
+}
+.ticket-stub::before,
+.ticket-stub::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:20px;height:20px;
+  background:#121212; /* Matches Card BG */
+  border-radius:50%;
+  transform:translateY(-50%);
+}
+.ticket-stub::before{left:-10px}
+.ticket-stub::after{right:-10px}
+
+.stub-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+.stub-label{
+  font-size:.75rem;
+  color:#777;
+  text-transform:uppercase;
+}
+.stub-val{
+  font-size:.95rem;
+  font-weight:600;
+  color:#eee;
+}
+
+/* Buttons */
+.btn-group{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.btn{
+  padding:14px;
+  border-radius:50px;
+  font-weight:600;
+  text-decoration:none;
+  transition:.3s;
+  text-align:center;
+  display: block; /* Ensure it takes full width */
+}
+.btn-primary{
+  background:var(--gold);
+  color:#000;
+  box-shadow:0 8px 25px rgba(255,215,0,.35);
+}
+.btn-primary:hover{transform:translateY(-3px);background:#fff}
+.btn-secondary{
+  border:1px solid #444;
+  color:#ccc;
+}
+.btn-secondary:hover{
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  border-color:#fff;
+}
+
+/* Animations */
+@keyframes drawCheck{
+  from{stroke-dasharray:100;stroke-dashoffset:100;opacity:0}
+  to{stroke-dashoffset:0;opacity:1}
+}
+@keyframes floatUp{
+  from{transform:translateY(30px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="container">
+  <div class="success-card">
+
+    <div class="checkmark-wrapper">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <path d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+
+    <h1>Booking Confirmed!</h1>
+    <p>Your seats have been successfully reserved.</p>
+
+    <div class="ticket-stub">
+      <div class="stub-row" style="margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #333;">
+        <span style="color:var(--gold);font-weight:700">E-TICKET</span>
+        <i class="fas fa-qrcode" style="color:#fff"></i>
+      </div>
+
+      <div class="stub-row">
+        <div>
+          <div class="stub-label">Status</div>
+          <div class="stub-val" style="color:var(--success)">Confirmed</div>
+        </div>
+        <div style="text-align:right">
+          <div class="stub-label">Email</div>
+          <div class="stub-val">Sent</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <a href="/my-bookings" class="btn btn-primary"><i class="fas fa-ticket-alt"></i> View My Tickets</a>
+      <a href="/movies" class="btn btn-secondary">Book Another Movie</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* Mouse glow */
+document.addEventListener("mousemove",e=>{
+  document.body.style.setProperty("--x",e.clientX+"px");
+  document.body.style.setProperty("--y",e.clientY+"px");
+});
+
+/* Confetti Logic */
+const c=document.getElementById("confetti-canvas");
+const ctx=c.getContext("2d");
+c.width=window.innerWidth;
+c.height=window.innerHeight;
+const conf=[];
+const colors=["#FFD700","#fff","#22c55e","#ff4500"];
+
+for(let i=0;i<100;i++){
+  conf.push({
+    x:Math.random()*c.width,
+    y:Math.random()*c.height-c.height,
+    s:Math.random()*8+4,
+    v:Math.random()*3+2,
+    col:colors[Math.floor(Math.random()*colors.length)],
+    r:Math.random()*360
+  });
+}
+
+function confetti(){
+  ctx.clearRect(0,0,c.width,c.height);
+  conf.forEach(p=>{
+    p.y+=p.v;
+    p.r+=2;
+    if(p.y>c.height)p.y=-10;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.r*Math.PI/180);
+    ctx.fillStyle=p.col;
+    ctx.fillRect(0,0,p.s,p.s);
+    ctx.restore();
+  });
+  requestAnimationFrame(confetti);
+}
+confetti();
+
+setTimeout(()=>ctx.clearRect(0,0,c.width,c.height),5000);
+</script>
+
+</body>
+</html>
