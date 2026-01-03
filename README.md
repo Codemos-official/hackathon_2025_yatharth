@@ -1,68 +1,85 @@
 # 🎬 Movie Reservation System (OTP Based)
 
 ## 📌 Project Overview
-**Movie Reservation System** ek simple aur user-friendly web application hai jisme users bina online payment ke movie tickets book kar sakte hain.  
-Is system ka main focus un users par hai jo **online payment par trust nahi karte** ya jinko payment failure ka dar hota hai.
+The **Movie Reservation System** is a simple and user-friendly web application that allows users to book movie tickets **without online payment**.
 
-Yahan booking **OTP based** hoti hai, jisse users ko guaranteed aur secure experience milta hai.
+This system is specially designed for users who **do not trust online payments** or feel insecure about payment failures.  
+Instead of payment, bookings are confirmed using an **OTP (One Time Password)** system.
 
 ---
 
 ## ⭐ Key Features
 
 ### 🔐 Login & Signup
-- User account create kar sakta hai
-- Secure login system
-- Sirf logged-in users hi booking kar sakte hain
+- User authentication system
+- Secure login and signup
+- Only logged-in users can book seats
 
 ---
 
 ### 🎥 Movie Dashboard
-- Available movies ki list
-- Movie details (timing, venue, seats)
+- List of available movies
+- Movie details (show time, venue, seats)
 - Real-time seat availability
 
 ---
 
 ### ⏳ Seat Hold System (5 Minutes)
-- Jab user seat select karta hai:
-  - Seat **5 minutes ke liye hold** ho jaati hai
-  - Is time ke dauran **koi aur user us seat ko book nahi kar sakta**
-- Agar 5 minutes ke andar booking complete nahi hui:
-  - Seat **automatically release** ho jaati hai
+- When a user selects a seat:
+  - The seat is **held for 5 minutes**
+  - During this time, **no other user can book that seat**
+- If the user does not complete the booking within 5 minutes:
+  - The seat is **automatically released**
 
-👉 Isse fair booking aur blocking avoid hoti hai
+✅ Prevents unfair blocking of seats
 
 ---
 
-### 🔑 OTP Based Booking (No Payment Required)
-- Is system me **koi online payment nahi hota**
-- Booking **OTP (One Time Password)** se confirm hoti hai
-- OTP user ko milta hai booking confirmation ke liye
+### 🔑 OTP-Based Booking (No Payment Required)
+- ❌ No online payment required
+- ✅ Booking is confirmed using OTP
+- OTP is used as booking verification
 
-✅ Best for users jo:
-- Online payment avoid karte hain  
-- Payment failure se pareshan rehte hain  
+This system is ideal for users who:
+- Avoid online payments
+- Are worried about payment failures
 
 ---
 
 ### 📖 My Bookings
-- User apni **previous bookings** dekh sakta hai
-- Movie name, time, venue aur seat details available
-- Booking history safe rehti hai
+- Users can view their **previous bookings**
+- Shows movie name, venue, time, and seat details
+- Booking history is securely stored
 
 ---
 
 ### ⏰ Venue Reporting Rule (30 Minutes)
-- User ko **movie time se 30 minutes pehle venue par report karna zaroori hai**
-- Agar user time par nahi aata:
-  - Seat **automatically release** ho jaati hai
-  - Taaki theatre / movie owner ko loss na ho
-
-👉 Ye rule seat wastage aur loss ko prevent karta hai
+- Users must arrive at the venue **30 minutes before the movie start time**
+- If the user does not arrive on time:
+  - The seat is **automatically released**
+  - This prevents loss for the theatre owner
 
 ---
 
 ## 💡 Why This System Is Unique?
-- ❌ No Online Payment
-- ✅ OTP Based Booking
+- No online payment system
+- OTP-based seat booking
+- Smart 5-minute seat hold timer
+- Automatic seat release
+- Trust-based booking experience
+
+---
+
+## 🛠 Tech Stack (Example)
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Python (Flask / Django)
+- **Database:** SQLite / MySQL
+- **Authentication:** Login + OTP system
+
+---
+
+## 🚀 Future Enhancements
+- Admin dashboard
+- SMS / Email OTP support
+- Improved seat selection UI
+- Multiple theatre / venue support
